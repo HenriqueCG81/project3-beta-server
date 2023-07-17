@@ -2,6 +2,9 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const userModel = require('../models/user.Models');
 const doctorModel = require('../models/doctor.Models');
+const appointmentModel = require('../models/appointmentModel');
+const moment = require('moment');
+
 const registerController = async (req, res) => {
   try {
     const existingUser = await userModel.findOne({ email: req.body.email });
@@ -177,6 +180,83 @@ const getAllDoctorsController = async (req, res) => {
   }
 };
 
+const bookAppointmentController = async (req, res) => {
+  try {
+    const newAppointment = new appointmentModel({
+      userId: req.body.userId,
+      doctorId: req.body.doctorId,
+      doctorInfo: {
+        _id: req.body.doctorInfo._id,
+        userId: req.body.doctorInfo.userId,
+        firstName: req.body.doctorInfo.firstName,
+        lastName: req.body.doctorInfo.lastName
+      },
+      userInfo: req.body.userInfo,
+      date: req.body.date,
+      time: req.body.time,
+      status: 'pending'
+    });
+
+    await newAppointment.save();
+
+    const user = await userModel.findOne({ _id: req.body.doctorInfo.userId });
+    user.notification.push({
+      type: 'New-appointment-Request',
+      message: `You have a new appointment request from ${req.body.userInfo.name}`,
+      onClickPath: '/user/appointments'
+    });
+    await user.save();
+
+    res.status(200).send({
+      success: true,
+      message: 'Appointment booked successfully'
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: 'Error from book appointment controller',
+      error
+    });
+  }
+};
+// booking bookingAvailbilityController
+
+const bookingAvailbilityController = async (req, res) => {
+  try {
+    const date = moment(req.body.date, 'DD-MM-YYYY').toISOString();
+    const fromTime = moment(req.body.time, 'HH:mm')
+      .add(1, 'hours')
+      .toISOString();
+    const toTime = moment(req.body.time, 'HH:mm')
+      .subtract(1, 'hours')
+      .toISOString();
+    const doctorId = req.body.doctorId;
+    const appointments = await appointmentModel.find({
+      doctorId,
+      date,
+      time: { $gte: fromTime, $lte: toTime }
+    });
+    if (appointments.length > 0) {
+      return res.status(200).send({
+        success: false,
+        message: 'Doctor is not available at this time'
+      });
+    } else {
+      return res.status(200).send({
+        success: true, // Define a propriedade 'success' como true para indicar que o médico está disponível
+        message: 'Doctor is available at this time'
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: `Error from bookingAvailbility`,
+      error
+    });
+  }
+};
 module.exports = {
   loginController,
   registerController,
@@ -184,5 +264,7 @@ module.exports = {
   applyDoctorController,
   getAllNotificationController,
   deleteAllNotificationController,
-  getAllDoctorsController
+  getAllDoctorsController,
+  bookAppointmentController,
+  bookingAvailbilityController
 };
