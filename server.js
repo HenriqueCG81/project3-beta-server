@@ -16,6 +16,7 @@ const app = express();
 //middleware00
 app.use(express.json());
 app.use(morgan('dev'));
+require('./config')(app);
 
 //routes
 app.get('/test', (req, res) => {

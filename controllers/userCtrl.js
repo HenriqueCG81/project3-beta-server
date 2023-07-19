@@ -33,6 +33,7 @@ const registerController = async (req, res) => {
 //login callback
 const loginController = async (req, res) => {
   try {
+    console.log('login controller');
     const user = await userModel.findOne({ email: req.body.email });
     if (!user) {
       return res
@@ -164,6 +165,7 @@ const deleteAllNotificationController = async (req, res) => {
 // get all doctors
 const getAllDoctorsController = async (req, res) => {
   try {
+    console.log('running');
     const doctors = await doctorModel.find({ status: 'approved' });
     res.status(200).send({
       success: true,
