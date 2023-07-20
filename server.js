@@ -4,7 +4,7 @@ const morgan = require('morgan');
 const dotenv = require('dotenv');
 const { connect } = require('mongoose');
 const connectDB = require('./config/db');
-
+const cors = require('cors');
 dotenv.config();
 
 // db connection
@@ -16,6 +16,9 @@ const app = express();
 //middleware00
 app.use(express.json());
 app.use(morgan('dev'));
+
+//cors
+app.use(cors());
 
 //routes
 app.use('/api/v1/user', require('./routes/userRoutes'));
