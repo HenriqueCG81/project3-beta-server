@@ -16,15 +16,8 @@ const app = express();
 //middleware00
 app.use(express.json());
 app.use(morgan('dev'));
-require('./config')(app);
 
 //routes
-app.get('/api', (req, res) => {
-  res.send('API endpoint is working!');
-});
-app.get('/test', (req, res) => {
-  res.send('hello world');
-});
 app.use('/api/v1/user', require('./routes/userRoutes'));
 app.use('/api/v1/admin', require('./routes/adminRoutes'));
 app.use('/api/v1/doctor', require('./routes/doctorRoutes'));
