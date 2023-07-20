@@ -19,6 +19,9 @@ app.use(morgan('dev'));
 require('./config')(app);
 
 //routes
+app.get('/api', (req, res) => {
+  res.send('API endpoint is working!');
+});
 app.get('/test', (req, res) => {
   res.send('hello world');
 });
