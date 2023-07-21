@@ -13,11 +13,16 @@ connectDB();
 // rest object
 const app = express();
 
-//middleware
+//middleware00
 app.use(express.json());
 app.use(morgan('dev'));
 
-// CORS configuration
+//cors
+
+app.get('/test', (req, res) => {
+  res.send('Hello from the server!');
+});
+
 app.use(
   cors({
     origin: '*' // Altere para o domínio real do cliente na produção
@@ -28,11 +33,6 @@ app.use(
 app.use('/api/v1/user', require('./routes/userRoutes'));
 app.use('/api/v1/admin', require('./routes/adminRoutes'));
 app.use('/api/v1/doctor', require('./routes/doctorRoutes'));
-
-app.get('/test', (req, res) => {
-  res.send('Hello from the server!');
-});
-
 //port
 const port = process.env.PORT || 8080;
 app.listen(port, () => {
