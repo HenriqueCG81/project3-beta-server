@@ -24,6 +24,12 @@ app.get('/test', (req, res) => {
   res.send('Hello from the server!');
 });
 
+app.use(
+  cors({
+    origin: '*' // Altere para o domínio real do cliente na produção
+  })
+);
+
 //routes
 app.use('/api/v1/user', require('./routes/userRoutes'));
 app.use('/api/v1/admin', require('./routes/adminRoutes'));
