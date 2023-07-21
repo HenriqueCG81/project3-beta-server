@@ -20,6 +20,10 @@ app.use(morgan('dev'));
 //cors
 app.use(cors());
 
+app.get('/test', (req, res) => {
+  res.send('Hello from the server!');
+});
+
 //routes
 app.use('/api/v1/user', require('./routes/userRoutes'));
 app.use('/api/v1/admin', require('./routes/adminRoutes'));
