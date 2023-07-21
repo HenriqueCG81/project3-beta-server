@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const { connect } = require('mongoose');
 const connectDB = require('./config/db');
 const cors = require('cors');
+const path = require('path');
 dotenv.config();
 
 // db connection
@@ -25,7 +26,7 @@ app.get('/test', (req, res) => {
 
 app.use(
   cors({
-    origin: 'http://localhost:8080'
+    origin: 'http://localhost:3000'
   })
 );
 
@@ -33,6 +34,12 @@ app.use(
 app.use('/api/v1/user', require('./routes/userRoutes'));
 app.use('/api/v1/admin', require('./routes/adminRoutes'));
 app.use('/api/v1/doctor', require('./routes/doctorRoutes'));
+
+app.use(express.static(path.join('./client/build')));
+app.get('*', function (req, res) {
+  res.sendFile(path.join(__dirname, './client/build/index.html'));
+});
+
 //port
 const port = process.env.PORT || 8080;
 app.listen(port, () => {
