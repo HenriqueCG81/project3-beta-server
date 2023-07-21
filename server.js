@@ -25,7 +25,7 @@ app.get('/test', (req, res) => {
 
 app.use(
   cors({
-    origin: '*' // Altere para o domínio real do cliente na produção
+    origin: 'http://localhost:8080'
   })
 );
 
