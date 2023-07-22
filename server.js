@@ -18,7 +18,6 @@ app.use(express.json());
 app.use(morgan('dev'));
 
 //cors
-app.use(config(app));
 
 app.get('/test', (req, res) => {
   res.send('Hello from the server!');
