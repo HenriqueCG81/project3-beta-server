@@ -22,6 +22,10 @@ const getDoctorInfoController = async (req, res) => {
 
 const updateProfileController = async (req, res) => {
   try {
+    console.log(req.body);
+
+    req.body.timings.splice(1, 1);
+    req.body.timings.splice(2, 1);
     const doctor = await doctorModel.findOneAndUpdate(
       { userId: req.body.userId },
       req.body
