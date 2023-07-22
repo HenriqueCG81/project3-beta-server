@@ -6,33 +6,26 @@ const { connect } = require('mongoose');
 const connectDB = require('./config/db');
 const cors = require('cors');
 const path = require('path');
-dotenv.config();
-
-// db connection
-connectDB();
-
 // rest object
 const app = express();
+dotenv.config();
+require('./config')(app);
+// db connection
+connectDB();
 
 //middleware00
 app.use(express.json());
 app.use(morgan('dev'));
 
 //cors
+app.use(config(app));
 
 app.get('/test', (req, res) => {
   res.send('Hello from the server!');
 });
 
-app.use(
-  cors({
-    origin: 'http://localhost:3000'
-  })
-);
-
 //routes
-const indexRoutes = require('./routes/indexRoutes');
-app.use('/api/v1', indexRoutes);
+
 app.use('/api/v1/user', require('./routes/userRoutes'));
 app.use('/api/v1/admin', require('./routes/adminRoutes'));
 app.use('/api/v1/doctor', require('./routes/doctorRoutes'));
