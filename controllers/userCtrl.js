@@ -294,6 +294,27 @@ const userAppointmentsController = async (req, res) => {
   }
 };
 
+const updateUserProfileController = async (req, res) => {
+  try {
+    const user = await userModel.findOneAndUpdate(
+      { _id: req.body.userId },
+      { email: req.body.email }
+    );
+    res.status(201).send({
+      success: true,
+      message: 'User profile updated successfully',
+      data: user
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: 'Error while updating user profile',
+      error
+    });
+  }
+};
+
 module.exports = {
   loginController,
   registerController,
@@ -304,5 +325,6 @@ module.exports = {
   getAllDoctorsController,
   bookAppointmentController,
   bookingAvailbilityController,
-  userAppointmentsController
+  userAppointmentsController,
+  updateUserProfileController
 };
