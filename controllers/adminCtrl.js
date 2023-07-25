@@ -68,9 +68,45 @@ const changeAccountStatusController = async (req, res) => {
     });
   }
 };
+const deleteUserController = async (req, res) => {
+  try {
+    // Find the user by ID
+    const user = await userModel.findById(req.params.userId);
+
+    if (!user) {
+      return res.status(404).send({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Check if the user is a doctor
+    if (user.isDoctor) {
+      // If the user is a doctor, find and delete the associated doctor record
+      await doctorModel.findOneAndDelete({ userId: req.params.userId });
+    }
+
+    // Delete the user
+    const deletedUser = await userModel.findByIdAndDelete(req.params.userId);
+
+    res.status(200).send({
+      success: true,
+      message: 'User and associated doctor deleted successfully',
+      data: deletedUser
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: 'Error deleting user',
+      error
+    });
+  }
+};
 
 module.exports = {
   getAllDoctorsController,
   getAllUsersController,
-  changeAccountStatusController
+  changeAccountStatusController,
+  deleteUserController
 };
